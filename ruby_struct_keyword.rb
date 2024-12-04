@@ -17,7 +17,12 @@ class Object
                    end
     const_sym = line_content.split(' ')[1].to_sym
     instance_exec(&blk)
-    Object.const_set(const_sym, Struct.new(*@properties))
+    if self.class == Object
+      self.class.const_set(const_sym, Struct.new(*@properties))
+    else
+      self.const_set(const_sym, Struct.new(*@properties))
+    end
+    
   end
 
   def self.const_missing(name)
@@ -38,7 +43,12 @@ class Object
     super unless line_content.start_with?('struct ')
   end
 end
+class Test
+  struct User do
+    property :name
+  end
+end
 
-struct User do
+struct Userex do
   property :name
 end
